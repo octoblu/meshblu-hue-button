@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- '0.10'
+deploy:
+  provider: npm
+  email: serveradmin@octoblu.com
+  api_key:
+    secure: Qnb0oUHttrROfqyA8tjMddV4VpsOaGJiay4sjraW6dIQkmHznsdAGl8U3+GX+5dyDhLViSH09G8Q4cgDKtfD/M6lGdspBv8LLYSeX5Y+c6zNn4hlNucybkSdwSnWnILgucc8bNXyAR+atiKLN4KbTKRGfep91gJ9vCaxh+WwoQBQ9u6B+HBgjVgmyv63SBBC3BDoTi3gRsLDpfkfRFTirjbtKCR02/TMe+0VpWKbwP35vmImDBb5oonjiLmgazEU4mNhtoX/7sj4jBssZrXqxgleccG6BszGnHGSRNZ7rkp+RLogf6dkg5YEfDnquy6kKIZxEYet4dRxyeRp3sdfkgx3Fk28f50ZK/956T/5MOUT6euWgrfMMfG0WNGh65t9ebyQwv5757FHhgIJyxUu8sYk1qTHb6MyPg+eBNLl4fm9fnF7tkAJSf1RfWkgP4BizKAtne9E7r6HgZtK2uyGRUIHq/olgzvmI48nPzVMqIlr+MPxnFJwfz2yks7RnZajJ+CU87X0O/bskG748GxplcEHBuhVePA2mrjTyFRo6gXahNiTrylHl+KE7qeAF9rmGFGcgvXmh1e/P2tvmx3t0rFvGS9Pwskx2dmCvIhexwtPLd8MtBGdGjveuccX2WgJAAis37BlFX8b50LxhdT++Yh9mglqkHiLhKLMpSh8hyM=
+  on:
+    tags: true
+    repo: octoblu/meshblu-hue-button
