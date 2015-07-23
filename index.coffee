@@ -1,8 +1,6 @@
 'use strict';
 util           = require 'util'
-url            = require 'url'
 {EventEmitter} = require 'events'
-request        = require 'request'
 _              = require 'lodash'
 debug          = require('debug')('meshblu-hue-button')
 
@@ -29,38 +27,42 @@ OPTIONS_SCHEMA =
       required: true
       default: 1000
 
-BUTTON_EVENTS =
-  16: '2'
-  17: '3'
-  18: '4'
-  34: '1'
-
 class Plugin extends EventEmitter
   constructor: ->
+    debug 'starting plugin'
     @options = {}
     @messageSchema = MESSAGE_SCHEMA
     @optionsSchema = OPTIONS_SCHEMA
 
   onMessage: (message) =>
+    debug 'on message', message
 
-  onConfig: (device) =>
+  onConfig: (device={}) =>
+    debug 'on config', username: device.username
+    @username = device.username
     @setOptions device.options
 
   setOptions: (options={}) =>
-    @options = _.defaults options, sensorPollInterval: 1000
+    debug 'setOptions', options
+    defaults = apiUsername: 'octoblu', sensorPollInterval: 1000
+    @options = _.extend defaults, options
+    @hue = new HueUtil @options.apiUsername, @options.ipAddress, @username, @onUsernameChange
 
     clearInterval @pollInterval
     @pollInterval = setInterval @checkSensors, @options.sensorPollInterval
 
+  onUsernameChange: (username) =>
+    debug 'onUsernameChange', username
+    @username = username
+    @emit 'update', username: @username
+
   checkSensors: =>
-    uri = url.format protocol: 'http', hostname: @options.ipAddress, pathname: "/api/#{@options.apiUsername}/sensors"
-
-    request uri: uri, method: 'GET', json: true, (error, response, body) =>
-      state = _.findWhere(_.values(body), name: @options.sensorName).state
-      return if _.isEqual @lastState, state
-
-      @lastState = state
-      @emit 'message', devices: ['*'], topic: 'click', payload: {button: BUTTON_EVENTS[state.buttonevent]}
+    debug 'updating hue', payload
+    @hue.checkButtons @options.sensorName, (error, response) =>
+      return @emit 'message', devices: ['*'], topic: 'error', payload: error: error if error?
+      return if _.isEqual @lastState, response.state
+      @lastState = response.state
+      @emit 'message', devices: ['*'], topic: 'click', payload: button: response.button
 
 module.exports =
   messageSchema: MESSAGE_SCHEMA
