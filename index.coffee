@@ -2,6 +2,7 @@
 util           = require 'util'
 {EventEmitter} = require 'events'
 _              = require 'lodash'
+HueUtil        = require 'hue-util'
 debug          = require('debug')('meshblu-hue-button')
 
 MESSAGE_SCHEMA =
