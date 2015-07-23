@@ -58,7 +58,7 @@ class Plugin extends EventEmitter
     @emit 'update', username: @username
 
   checkSensors: =>
-    debug 'updating hue', payload
+    debug 'checking sensors'
     @hue.checkButtons @options.sensorName, (error, response) =>
       return @emit 'message', devices: ['*'], topic: 'error', payload: error: error if error?
       return if _.isEqual @lastState, response.state
