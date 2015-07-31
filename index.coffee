@@ -39,23 +39,29 @@ class Plugin extends EventEmitter
     debug 'on message', message
 
   onConfig: (device={}) =>
-    debug 'on config', username: device.username
-    @username = device.username
+    debug 'on config', apikey: device.apikey
+    @apikey = device.apikey || {}
     @setOptions device.options
 
   setOptions: (options={}) =>
     debug 'setOptions', options
     defaults = apiUsername: 'octoblu', sensorPollInterval: 1000
     @options = _.extend defaults, options
-    @hue = new HueUtil @options.apiUsername, @options.ipAddress, @username, @onUsernameChange
+
+    if @options.apiUsername != @apikey?.devicetype
+      @apikey =
+        devicetype: @options.apiUsername
+        username: null
+
+    @hue = new HueUtil @options.apiUsername, @options.ipAddress, @apikey?.username, @onUsernameChange
 
     clearInterval @pollInterval
     @pollInterval = setInterval @checkSensors, @options.sensorPollInterval
 
   onUsernameChange: (username) =>
     debug 'onUsernameChange', username
-    @username = username
-    @emit 'update', username: @username
+    @apikey.username = username
+    @emit 'update', apikey: @apikey
 
   checkSensors: =>
     debug 'checking sensors'
