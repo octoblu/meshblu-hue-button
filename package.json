@@ -1,7 +1,7 @@
 {
   "name": "meshblu-hue-button",
   "repository": "octoblu/meshblu-hue-button",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "main": "connector.js",
   "scripts": {
     "preinstall": "node -e \"try{require('./skip-install.js')}catch(e){}\"",
@@ -11,7 +11,7 @@
   "dependencies": {
     "coffee-script": "^1.9.0",
     "debug": "^2.1.0",
-    "hue-util": "^1.0.5",
+    "hue-util": "^1.1.1",
     "lodash": "^3.10.0",
     "meshblu": "^1.30.0"
   },
