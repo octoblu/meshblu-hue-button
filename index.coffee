@@ -26,7 +26,7 @@ OPTIONS_SCHEMA =
     sensorPollInterval:
       type: 'integer'
       required: true
-      default: 1000
+      default: 5000
 
 class Plugin extends EventEmitter
   constructor: ->
@@ -45,7 +45,7 @@ class Plugin extends EventEmitter
 
   setOptions: (options={}) =>
     debug 'setOptions', options
-    defaults = apiUsername: 'octoblu', sensorPollInterval: 1000
+    defaults = apiUsername: 'octoblu', sensorPollInterval: 5000
     @options = _.extend defaults, options
 
     if @options.apiUsername != @apikey?.devicetype
@@ -66,7 +66,7 @@ class Plugin extends EventEmitter
   checkSensors: =>
     debug 'checking sensors'
     @hue.checkButtons @options.sensorName, (error, response) =>
-      return @emit 'message', devices: ['*'], topic: 'error', payload: error: error if error?
+      return console.error error if error?
       return if _.isEqual @lastState, response.state
       @lastState = response.state
       @emit 'message', devices: ['*'], topic: 'click', payload: button: response.button
