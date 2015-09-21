@@ -1,11 +1,36 @@
 language: node_js
 node_js:
 - '0.10'
+before_install:
+  - npm install npm -g
+before_deploy:
+  - npm install ws browserify coffeeify
+  - mkdir -p deploy/meshblu-hue-button/latest
+  - mkdir -p deploy/meshblu-hue-button/$TRAVIS_TAG
+  - node_modules/.bin/browserify -t coffeeify -s Connector connector.js > deploy/meshblu-hue-button/latest/meshblu-hue-button.js
+  - gzip deploy/meshblu-hue-button/latest/meshblu-hue-button.js
+  - mv deploy/meshblu-hue-button/latest/meshblu-hue-button.js.gz deploy/meshblu-hue-button/latest/meshblu-hue-button.js
+  - cp deploy/meshblu-hue-button/latest/meshblu-hue-button.js deploy/meshblu-hue-button/$TRAVIS_TAG/meshblu-hue-button.js
 deploy:
-  provider: npm
-  email: serveradmin@octoblu.com
-  api_key:
-    secure: Qnb0oUHttrROfqyA8tjMddV4VpsOaGJiay4sjraW6dIQkmHznsdAGl8U3+GX+5dyDhLViSH09G8Q4cgDKtfD/M6lGdspBv8LLYSeX5Y+c6zNn4hlNucybkSdwSnWnILgucc8bNXyAR+atiKLN4KbTKRGfep91gJ9vCaxh+WwoQBQ9u6B+HBgjVgmyv63SBBC3BDoTi3gRsLDpfkfRFTirjbtKCR02/TMe+0VpWKbwP35vmImDBb5oonjiLmgazEU4mNhtoX/7sj4jBssZrXqxgleccG6BszGnHGSRNZ7rkp+RLogf6dkg5YEfDnquy6kKIZxEYet4dRxyeRp3sdfkgx3Fk28f50ZK/956T/5MOUT6euWgrfMMfG0WNGh65t9ebyQwv5757FHhgIJyxUu8sYk1qTHb6MyPg+eBNLl4fm9fnF7tkAJSf1RfWkgP4BizKAtne9E7r6HgZtK2uyGRUIHq/olgzvmI48nPzVMqIlr+MPxnFJwfz2yks7RnZajJ+CU87X0O/bskG748GxplcEHBuhVePA2mrjTyFRo6gXahNiTrylHl+KE7qeAF9rmGFGcgvXmh1e/P2tvmx3t0rFvGS9Pwskx2dmCvIhexwtPLd8MtBGdGjveuccX2WgJAAis37BlFX8b50LxhdT++Yh9mglqkHiLhKLMpSh8hyM=
-  on:
-    tags: true
-    repo: octoblu/meshblu-hue-button
+  - provider: s3
+    region: us-west-2
+    skip_cleanup: true
+    detect_encoding: true
+    access_key_id: AKIAJH2D5IPIRHYJT5IA
+    secret_access_key:
+      secure: "kpdAzoJeusN97wLpP/gxjQ0otF35zttxKI9z4ysZdb/JxZAoc+5491XKdyY1mHwJ8rzTmpMPyOuuBqiRcsrQX69NovYqD9W2DADSaSWnXU1FUz5QsddxwbxRkp1vQGch3l9DCDAJ+m0ToDzBTGYtjhW6QA3R9BmlCQ/yAnzpgWPxsemHiq6sb0bNoFPZrFsKDBAmqDw+cGP0sMtTRo1Y4r0Y2u5si22dtMRBM6IE8z+eaMnz2Mczfxfk64/z4dinAXxyUVgaFGYLqUvA7xJQRfx1pfo+XKYRAgYXg19v8tMPGexkHJr292zM7uymdrkI0TaEysgMugFCqMjL2EwiIuVLqvE8NlkKlRvYyeLsyLzGf8mhKyTvQdhiPXQRWwxFDbI3cM29VQDIhLkIx99LHVzgoZPB9OFc4v96wHfmZkpJ2TK0KhKAscT+EDo540/UYJqe1PuGMej+LQOtEDktZ4wYJMtlP9SqCvcZ4SVv3Na9KsL71F81VafE2lw/aeSy0LvXK/liWxqzAVnOgKTsMvPKJd2xIv1KUmzpea6aehP98zP41Eu8LD2VAlifzcFJfaYTpjqEvmQcubM01hzOIK/94Vh5o/S4fxIVL4or0LVy7tmDQm70TwgCD+08whSyWUVvcfqninNydBxfr7+h2cstOj7I0jm9QzHhFoMUveY="
+    bucket: octoblu-cdn
+    local-dir: deploy
+    upload-dir: js
+    on:
+      tags: true
+      all_branches: true
+  - provider: npm
+    skip_cleanup: true
+    clean_up: false
+    email: serveradmin@octoblu.com
+    api_key:
+      secure: "aXfzCKb6pjnXNOWYWRLeYGDhmhwbQqA0b4wUjsAMakYUm/ntojbdFg+PlbLmLUBrOZBa/5RnIWr6bnWbAVyxSZQb14hNzn9uDMcrSQHb5ivSRoaGi2cBKIuDnqW27B1nTR3lKg/oG27nhQtIS8MSzkkN0cwZdrYVgTkC6W50+7n0Pt9L+pSYKKo2gTsoeyGb+Zeqe2xsrP2+f314JwJK+xHhWV3XbR5LF6xR+LOAGLBBLBbOL0Isv8WLwVqgIcGblQkzJbOxw69kd+G04CwB2X6Z1xefocPVUCk8Kub3f996SSmdiBseKs0TadxAdHUei5CdPmL5uD4LA/Sszsmx9cXQL8aPlbmFPca3QnC+FUHhL+7aDxi/s/dFY6z66Qf4t3pdqSelMGx8QS1VjiNs4pFjPzhqnwsoKWn1DCHTJYGD3SIUiHXQPkKyM9acMXyWPSWOJp77qrHjnDhya8eAuILuRU5JaQOpqa8K+OUAI45AyPvnHneHZ6zKd9YkFaudnAw38DHXSTSMbD38C0ttQ8onKghtmezXB+M2kA244sMbl+nIV/NCCbQFFXX0ivAVajz83j2Ipl1ZVQNC8AKMMGnmIEDryIJIMK9GxfShuMegjcE90VBccLn4v/XHCHkhCJ6AEhc8/AMlwLqBZTWwrhTILy8atSjN8tfhyDOXkQs="
+    on:
+      tags: true
+      all_branches: true
