@@ -1,5 +1,11 @@
 ## meshblu-hue-button
 
+[![Build Status](https://travis-ci.org/octoblu/meshblu-hue-button.svg?branch=master)](https://travis-ci.org/octoblu/meshblu-hue-button)
+[![Code Climate](https://codeclimate.com/github/octoblu/meshblu-hue-button/badges/gpa.svg)](https://codeclimate.com/github/octoblu/meshblu-hue-button)
+[![Test Coverage](https://codeclimate.com/github/octoblu/meshblu-hue-button/badges/coverage.svg)](https://codeclimate.com/github/octoblu/meshblu-hue-button)
+[![npm version](https://badge.fury.io/js/meshblu-hue-button.svg)](http://badge.fury.io/js/meshblu-hue-button)
+[![Gitter](https://badges.gitter.im/octoblu/help.svg)](https://gitter.im/octoblu/help)
+
 A Meshblu connector for use in Octoblu or with other services.
 
 ### Setup Instructions
